@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}{{ title }}{% endblock %}
+{% block content %}
+<ul class="pitch-list-column">
+    {% for itor in post %}
+    <p class="net-votes">{{itor.getLikes}}</p>
+    <div class="post-list">
+        <div class="voting-buttons">
+            <form action="{% url 'likePost' itor.pk %}" method="POST">
+                {% csrf_token %}
+                <button type="submit" name="post_id" value="{{ itor.id }}" id="like-button" class = "button"> 
+                    Like
+                </button>
+            </form>
+        </div>
+       
+            <a href="#" id="post-title">{{itor.header}}</a>
+        </div>
+        <br>
+    {% endfor %}
+</ul>
+
+{% endblock %}
+{% block scripts %}
+{% endblock %}

@@ -1,0 +1,26 @@
+{% load static %}
+<!DOCTYPE html>
+<html class="no-js">
+     <head>
+            <meta charset="utf-8" />
+            <meta http-equiv="x-ua-compatible" content="ie=edge">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>{% block title %}{% endblock %}</title>
+            <link rel="stylesheet" href="{% static "css/foundation.css" %}">
+            <link rel="stylesheet" href="{% static "css/floating.css" %}">
+            {% block css%}{% endblock %}
+        </head>
+    <body>
+        <h1 style="text-align: center;">
+            CINS 465 Brandon's Website
+        </h1>
+        <div>
+        {% block content %}{% endblock %}
+    </div>
+        
+      
+    <script src="{% static "js/vendor.js" %}"></script>
+    <script src="{% static "js/foundation.js" %}"></script>
+        {% block scripts %}{% endblock %}
+    </body>
+</html>
