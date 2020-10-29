@@ -2,10 +2,12 @@
 {% load static %}
 {% block title %}{{ title }}{% endblock %}
 {% block content %}
-<ul class="pitch-list-column">
+<link rel="stylesheet" href="{% static "css/infoCard.css" %}">
+<ul class="grid-container">
     {% for itor in post %}
-    <p class="net-votes">{{itor.getLikes}}</p>
-    <div class="post-list">
+    <div class="card-info alert">
+    <div class="card-info-content">
+        <p class="net-votes">{{itor.getLikes}}</p>
         <div class="voting-buttons">
             <form action="{% url 'likePost' itor.pk %}" method="POST">
                 {% csrf_token %}
@@ -17,6 +19,7 @@
        
             <a href="#" id="post-title">{{itor.header}}</a>
         </div>
+    </div>
         <br>
     {% endfor %}
 </ul>
