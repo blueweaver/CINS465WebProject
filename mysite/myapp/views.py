@@ -41,6 +41,7 @@ def logout_view(request):
     logout(request)
     return redirect("/login/")
 
+#hi
 def register(request):
     if request.method == "POST":
         form_instance = forms.RegistrationForm(request.POST)
