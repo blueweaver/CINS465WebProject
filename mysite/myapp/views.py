@@ -53,3 +53,20 @@ def register(request):
         "form":form_instance,
     }
     return render(request, "registration/register.html", context=context)
+
+def addComment(request, pk):
+    if not request.user.is_authenticated:
+        return redirect("/")
+    if request.method == "POST":
+        form = forms.CommentForm(request.POST)
+        if form.is_valid():
+            form.save(request, pk)
+            return redirect("/")
+    else:
+        form = forms.CommentForm()
+    context = {
+        "title":"Comment",
+        "post_id":pk,
+        "form":form
+    }
+    return render(request, "addComment.html", context=context)

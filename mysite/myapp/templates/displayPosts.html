@@ -19,6 +19,14 @@
        
             <a href="#" id="post-title">{{itor.header}}</a>
         </div>
+            <div>
+                {% for cItor in itor.comments.all %}
+                <p>{{cItor.comment}}</p>
+                {% endfor %}
+                {% if user.is_authenticated %}
+                <a href="{% url 'addComment' itor.pk %}" class="button">comment</a>
+                {% endif %}
+            </div>
     </div>
         <br>
     {% endfor %}
