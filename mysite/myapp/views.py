@@ -3,6 +3,8 @@ from django.http import HttpResponse, JsonResponse, HttpResponseRedirect
 from django.urls import reverse
 from django.contrib.auth import logout
 from django.contrib.auth.decorators import login_required
+from taggit.models import Tag
+from django.template.defaultfilters import slugify
 from . import forms
 from . import models
 # Create your views here.
@@ -10,11 +12,13 @@ def index(request):
     
     title = "Brandon's Website"
     posts = models.PostModel.objects.all()
+    common_tags = models.PostModel.tags.most_common()[:20]
     context = {
         "post":posts,
         "title":title,
+        "common_tags":common_tags,
     }
-    return render(request, "displayPosts.html", context = context)
+    return render(request, "home.html", context = context)
 
 #This function is inspired by this stack overflow post: rb.gy/pb8u2y
 @login_required(redirect_field_name='main')
@@ -70,3 +74,31 @@ def addComment(request, pk):
         "form":form
     }
     return render(request, "addComment.html", context=context)
+
+def addPost(request):
+    if not request.user.is_authenticated:
+        return redirect("/")
+    if request.method == "POST":
+        form = forms.PostForm(request.POST, request.FILES)
+        if form.is_valid():
+            form.save(request)
+            return redirect("/")
+    else:
+        form = forms.PostForm()
+    context = {
+        "title":"Make Content",
+        "form":form
+    }
+    return render(request, "addPost.html", context=context)
+
+
+def tagged(request, slug):
+    tag = get_object_or_404(Tag, slug=slug)
+    common_tags = models.PostModel.tags.most_common()[:20]
+    posts = models.PostModel.objects.filter(tags=tag)
+    context = {
+        'tag':tag,
+        'common_tags':common_tags,
+        'post':posts,
+    }
+    return render(request, 'home.html', context=context)

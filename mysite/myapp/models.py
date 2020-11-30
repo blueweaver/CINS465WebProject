@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from taggit.managers import TaggableManager
 
 # Create your models here.
 class PostModel(models.Model):
@@ -8,6 +9,18 @@ class PostModel(models.Model):
     like = models.IntegerField(default=0)
     author = models.ForeignKey(User, on_delete=models.CASCADE)
     published_on = models.DateTimeField(auto_now_add=True) 
+    slug = models.SlugField(unique=True, max_length=100)
+    tags = TaggableManager()
+    gif = models.ImageField(
+        max_length=144,
+        upload_to='uploads/%Y/%m/%d/',
+        null=False
+    )
+    audio = models.FileField(
+        max_length=144,
+        upload_to='uploads/%Y/%m/%d/',
+        null=False
+    )
 
     def __str__(self):
         return self.post

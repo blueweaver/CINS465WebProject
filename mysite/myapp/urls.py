@@ -9,4 +9,6 @@ urlpatterns = [
     path('register/', views.register),
     path('logout/', views.logout_view),
     path('comment/<int:pk>', views.addComment, name='addComment'),
+    path('post/', views.addPost, name='addPost'),
+    path('tag/<slug:slug>/', views.tagged, name="tagged"),
 ]

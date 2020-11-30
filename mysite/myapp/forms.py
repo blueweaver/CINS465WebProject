@@ -1,6 +1,9 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
+from taggit.models import Tag
+from taggit.forms import *
+from django.template.defaultfilters import slugify
 from . import models
 
 
@@ -10,7 +13,7 @@ def must_be_unique(value):
         raise forms.ValidationError("Email Already in Use")
     return value
 
-class postForm(forms.Form):
+class PostForm(forms.Form):
     
     header = forms.CharField(
         label='Enter Title',
@@ -19,17 +22,38 @@ class postForm(forms.Form):
     )
 
     post = forms.CharField(
-        label='Enter Idea',
+        label='Enter Description',
         required = True,
         max_length = 240,
     ) 
 
+    gif = forms.ImageField(
+        label='Enter Gif',
+        required = True
+    )
 
-    def save(self):
+    audio = forms.FileField(
+        label='Enter MP3',
+        required = True
+    )
+
+    tags = TagField(
+        label='Enter Tags',
+        max_length = 240,
+    ) 
+
+    def save(self, request):
         post_instance = models.PostModel()
         post_instance.post = self.cleaned_data["post"]
         post_instance.header = self.cleaned_data["header"]
+        post_instance.gif = self.cleaned_data["gif"]
+        post_instance.audio = self.cleaned_data["audio"]
+        post_instance.author = request.user
+        post_instance.slug = slugify(post_instance.header)
+        tags = self.cleaned_data['tags']
         post_instance.save()
+        for tag in tags:
+            post_instance.tags.add(tag)
         return post_instance
 
 class RegistrationForm(UserCreationForm):

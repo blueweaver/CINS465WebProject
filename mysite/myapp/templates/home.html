@@ -3,6 +3,13 @@
 {% block title %}{{ title }}{% endblock %}
 {% block content %}
 <link rel="stylesheet" href="{% static "css/infoCard.css" %}">
+<link rel="stylesheet" href="{% static "css/tags.css" %}">
+<h5 class="tag-cloud-title">SELECT CATEGORY</h5>
+    <div class="tag-cloud">
+    {% for mt in common_tags %}
+        <a href="{% url 'tagged' mt.slug %}" class="tag-cloud-individual-tag">{{mt}}</a>
+    {% endfor %}
+    </div>
 <ul class="grid-container">
     {% for itor in post %}
     <div class="card-info alert">
@@ -18,6 +25,10 @@
         </div>
        
             <a href="#" id="post-title">{{itor.header}}</a>
+            <img src=/MEDIA/{{itor.gif}} alt={{itor.post}}>
+            <audio controls>
+            <source src="/MEDIA/{{itor.audio}}">
+            </audio>
         </div>
             <div>
                 {% for cItor in itor.comments.all %}
