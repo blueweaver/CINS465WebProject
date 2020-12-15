@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}{{ title }}{% endblock %}
+{% block content %}
+<link rel="stylesheet" href="{% static "css/infoCard.css" %}">
+<h1 style="text-align: center;">{{author}}'s Content Page</h1>
+    <ul class="grid-container">
+        {% for itor in personalPost %}
+        <div class="card-info alert">
+        <div class="card-info-content">
+            Title:  <a href="{% url 'detailPost' itor.pk %}">{{itor.header}}</a>
+            By: <a href="{% url 'userView' itor.pk %}">{{itor.author}}</a>
+            <div>
+                Likes: <p class="net-votes">{{itor.getLikes}}</p>
+                <form action="{% url 'likePost' itor.pk %}" method="POST">
+                    {% csrf_token %}
+                    <button type="submit" name="post_id" value="{{ itor.id }}" id="like-button" class = "button"> 
+                        Like
+                    </button>
+                </form>
+            </div>
+            </div>
+        </div>
+            <br>
+        {% endfor %}
+    </ul>
+    <h1 style="text-align: center;"> Content that {{author}} likes </h1>
+    <ul class="grid-container">
+        {% for itor in likedPost %}
+        <div class="card-info alert">
+        <div class="card-info-content">
+            Title: <a href="{% url 'detailPost' itor.pk %}">{{itor.header}}</a>
+            By:  <a href="{% url 'userView' itor.pk %}">{{itor.author}}</a>
+            <div>
+                Likes:<p class="net-votes">{{itor.getLikes}}</p>
+                <form action="{% url 'likePost' itor.pk %}" method="POST">
+                    {% csrf_token %}
+                    <button type="submit" name="post_id" value="{{ itor.id }}" id="like-button" class = "button"> 
+                        Like
+                    </button>
+                </form>
+            </div>
+            </div>
+        </div>
+            <br>
+        {% endfor %}
+    </ul>
+
+
+{% endblock %}
+{% block scripts %}
+{% endblock %}

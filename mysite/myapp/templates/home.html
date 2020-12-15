@@ -9,12 +9,32 @@
     {% for mt in common_tags %}
         <a href="{% url 'tagged' mt.slug %}" class="tag-cloud-individual-tag">{{mt}}</a>
     {% endfor %}
+    <a href="{% url 'popular' %}" class="tag-cloud-individual-tag">Popular</a>
+    <a href="{% url 'new' %}" class="tag-cloud-individual-tag">New</a>
     </div>
 <ul class="grid-container">
+    {% if user.is_authenticated %}
+    <div class="card-info alert">
+        <div class="card-info-content">
+            Subscriptions:
+         {% for itor in currentSubs %}
+         {{ itor.creator }},
+        {% endfor %}
+        <br>
+        Subscribers:
+        {% for itor in currentFollowers %}
+            {{itor.subscriber}},
+        {% endfor %}
+            </div>
+    </div>
+    {% endif %}
     {% for itor in post %}
     <div class="card-info alert">
     <div class="card-info-content">
-        <p class="net-votes">{{itor.getLikes}}</p>
+        Title: <a href="{% url 'detailPost' itor.pk %}">{{itor.header}}</a>
+        Creator: <a href="{% url 'userView' itor.pk %}">{{itor.author}}</a>
+        <br>
+        Likes: <p class="net-votes">{{itor.getLikes}}</p>
         <div class="voting-buttons">
             <form action="{% url 'likePost' itor.pk %}" method="POST">
                 {% csrf_token %}
@@ -23,26 +43,14 @@
                 </button>
             </form>
         </div>
-       
-            <a href="#" id="post-title">{{itor.header}}</a>
-            <img src=/MEDIA/{{itor.gif}} alt={{itor.post}}>
-            <audio controls>
-            <source src="/MEDIA/{{itor.audio}}">
-            </audio>
+           
+            <a href="{% url 'sub' itor.pk %}" class="button">Subscribe</a>
         </div>
-            <div>
-                {% for cItor in itor.comments.all %}
-                <p>{{cItor.comment}}</p>
-                {% endfor %}
-                {% if user.is_authenticated %}
-                <a href="{% url 'addComment' itor.pk %}" class="button">comment</a>
-                {% endif %}
-            </div>
     </div>
         <br>
     {% endfor %}
 </ul>
-
 {% endblock %}
 {% block scripts %}
 {% endblock %}
+

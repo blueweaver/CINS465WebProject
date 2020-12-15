@@ -11,4 +11,10 @@ urlpatterns = [
     path('comment/<int:pk>', views.addComment, name='addComment'),
     path('post/', views.addPost, name='addPost'),
     path('tag/<slug:slug>/', views.tagged, name="tagged"),
+    path('detail/<int:pk>', views.detailPostView, name='detailPost'),
+    path('user/<int:pk>', views.userView, name='userView'),
+    path('popular/', views.sortByPop, name='popular'),
+    path('new/', views.sortByNew, name='new'),
+    path('subscribe/<int:pk>', views.subscribeView, name='sub'),
+
 ]

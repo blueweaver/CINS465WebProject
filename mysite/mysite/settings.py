@@ -41,6 +41,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'taggit',
     'myapp',
+    'channels',
+    'chat',
 ]
 
 MIDDLEWARE = [
@@ -125,3 +127,14 @@ STATIC_URL = '/static/'
 
 MEDIA_ROOT = BASE_DIR / 'MEDIA'
 MEDIA_URL = '/MEDIA/'
+
+ASGI_APPLICATION = 'mysite.asgi.application'
+
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {
+            "hosts": [("redis", 6379)],
+        },
+    },
+}

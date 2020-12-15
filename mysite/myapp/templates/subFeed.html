@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}{{ title }}{% endblock %}
+{% block content %}
+<link rel="stylesheet" href="{% static "css/infoCard.css" %}">
+<h1 style="text-align: center;">{{authors}}'s Subscription Feed</h1>
+    <ul class="grid-container">
+        {% for itor in sp %}
+        <div class="card-info alert">
+        <div class="card-info-content">
+            <p class="net-votes">{{itor.getLikes}}</p>
+            <div class="voting-buttons">
+                <form action="{% url 'likePost' itor.pk %}" method="POST">
+                    {% csrf_token %}
+                    <button type="submit" name="post_id" value="{{ itor.id }}" id="like-button" class = "button"> 
+                        Like
+                    </button>
+                </form>
+            </div>
+       
+            <a href="{% url 'userView' itor.pk %}">{{itor.author}}</a>
+                <a href="{% url 'detailPost' itor.pk %}">{{itor.header}}</a>
+            </div>
+        </div>
+            <br>
+        {% endfor %}
+    </ul>
+
+
+{% endblock %}
+{% block scripts %}
+{% endblock %}

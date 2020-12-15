@@ -1,0 +1,94 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}{{ title }}{% endblock %}
+{% block content %}
+<link rel="stylesheet" href="{% static "css/infoCard.css" %}">
+<ul class="grid-container">
+
+    <div class="card-info alert">
+    <div class="card-info-content">
+       <h1 style="text-align: center;">{{post.header}} </h1>
+       <h2 style="text-align: center;">Description: {{post.post}}</h2>
+       <h2 style="text-align: center;">By: {{post.author}}</h2>
+       
+          <div style="text-align: center;">
+            <img src=/MEDIA/{{post.gif}} alt={{post.post}}>
+            <br>
+            <audio controls>
+            <source src="/MEDIA/{{post.audio}}">
+            </audio>
+          </div>
+            <!--
+            <video width="320" height="240" autoplay>
+                <source src=/MEDIA/{{post.finalVideo}} type="video/mp4">
+                    </video>  
+                    {{post.finalVideo}}
+                --> 
+        </div>
+            <h2>Likes: {{post.getLikes}} </h2>
+            <div>
+                <form action="{% url 'likePost' post.pk %}" method="POST">
+                    {% csrf_token %}
+                    <button type="submit" name="post_id" value="{{ post.id }}" id="like-button" class = "button"> 
+                        Like
+                    </button>
+                </form>
+            </div>
+            <div>
+                <h2>Comments </h2>
+                {% for cItor in post.comments.all %}
+                <p>{{cItor.author}}: {{cItor.comment}}</p>
+                {% endfor %}
+                {% if user.is_authenticated %}
+                <a href="{% url 'addComment' post.pk %}" class="button">comment</a>
+                {% endif %}
+            </div>
+    </div>
+        <br>
+</ul>
+
+<textarea id="chat-log" cols="100" rows="20"></textarea><br>
+<input id="chat-message-input" type="text" size="100"><br>
+<input id="chat-message-submit" type="button" value="Send">
+{{ room_name|json_script:"room-name" }}
+<script>
+    const roomName = JSON.parse(document.getElementById('room-name').textContent);
+
+    const chatSocket = new WebSocket(
+        'ws://'
+        + window.location.host
+        + '/ws/chat/'
+        + roomName
+        + '/'
+    );
+
+    chatSocket.onmessage = function(e) {
+        const data = JSON.parse(e.data);
+        document.querySelector('#chat-log').value += (data.message + '\n');
+    };
+
+    chatSocket.onclose = function(e) {
+        console.error('Chat socket closed unexpectedly');
+    };
+
+    document.querySelector('#chat-message-input').focus();
+    document.querySelector('#chat-message-input').onkeyup = function(e) {
+        if (e.keyCode === 13) {  // enter, return
+            document.querySelector('#chat-message-submit').click();
+        }
+    };
+
+    document.querySelector('#chat-message-submit').onclick = function(e) {
+        const messageInputDom = document.querySelector('#chat-message-input');
+        const message = messageInputDom.value;
+        chatSocket.send(JSON.stringify({
+            'message': message
+        }));
+        messageInputDom.value = '';
+    };
+</script>
+
+
+{% endblock %}
+{% block scripts %}
+{% endblock %}

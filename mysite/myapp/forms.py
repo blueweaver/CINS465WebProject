@@ -3,7 +3,12 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from taggit.models import Tag
 from taggit.forms import *
+from moviepy.editor import *
+import subprocess
 from django.template.defaultfilters import slugify
+from django.core.exceptions import ValidationError
+from django.core.validators import FileExtensionValidator
+from django.utils.translation import gettext_lazy as _
 from . import models
 
 
@@ -13,12 +18,23 @@ def must_be_unique(value):
         raise forms.ValidationError("Email Already in Use")
     return value
 
+def must_be_unique_header(value):
+    title = models.PostModel.objects.filter(header=value)
+    if len(title) > 0:
+        raise forms.ValidationError("Title Already in Use")
+    return value
+
+
+
+
+
 class PostForm(forms.Form):
     
     header = forms.CharField(
         label='Enter Title',
         required = True,
         max_length = 100,
+        validators=[must_be_unique_header]
     )
 
     post = forms.CharField(
@@ -27,14 +43,16 @@ class PostForm(forms.Form):
         max_length = 240,
     ) 
 
-    gif = forms.ImageField(
+    gif = forms.FileField(
         label='Enter Gif',
-        required = True
+        required = True,
+        validators=[FileExtensionValidator(['gif'])]
     )
 
     audio = forms.FileField(
         label='Enter MP3',
-        required = True
+        required = True,
+        validators=[FileExtensionValidator(['mp3'])]
     )
 
     tags = TagField(
@@ -54,6 +72,13 @@ class PostForm(forms.Form):
         post_instance.save()
         for tag in tags:
             post_instance.tags.add(tag)
+        #video = VideoFileClip(post_instance.gif.path)
+        #video.set_audio(post_instance.audio.path)
+        #post_instance.finalVideo = video
+        #video.close()
+        #video._committed = False
+        #post_instance.save()
+        
         return post_instance
 
 class RegistrationForm(UserCreationForm):
